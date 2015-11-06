@@ -10,6 +10,22 @@ var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/sq
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({expanded: true}));
 
+
+app.get('/find',function(req,res){
+    var person = req.query.peopleSearch;
+    pg.connect(connectionString, function(err,client){
+        client.query("SELECT name, age, location,address,animal From people WHERE name ILIKE $1", [person], function(err,result){
+            if(err) {
+                console.log("Error finding data: ", err);
+                res.send(false);
+            }
+            //console.log(result);
+            console.log(result.rows);
+            res.send(result.rows);
+        })
+    })
+});
+
 // Get all the people information
 app.get('/data', function(req,res){
     var results = [];
