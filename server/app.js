@@ -16,7 +16,7 @@ app.get('/data', function(req,res){
 
     //SQL Query > SELECT data from table
     pg.connect(connectionString, function (err, client, done) {
-        var query = client.query("SELECT id, name, location FROM people ORDER BY name ASC");
+        var query = client.query("SELECT id, name, location, age, address, animal FROM people ORDER BY name ASC");
 
         // Stream results back one row at a time, push into results array
         query.on('row', function (row) {
@@ -38,11 +38,13 @@ app.get('/data', function(req,res){
 
 // Add a new person
 app.post('/data', function(req,res){
-    console.log(req);
-
+    //console.log(req);
     var addedPerson = {
         "name" : req.body.peopleAdd,
-        "location" : req.body.locationAdd
+        "location" : req.body.locationAdd,
+        "age" : req.body.ageAdd,
+        "address": req.body.addressAdd,
+        "animal": req.body.animalAdd
     };
 
     pg.connect(connectionString, function (err, client) {
@@ -54,13 +56,13 @@ app.post('/data', function(req,res){
         //console.log(query);
         //client.query(query);
 
-        client.query("INSERT INTO people (name, location) VALUES ($1, $2) RETURNING id", [addedPerson.name, addedPerson.location],
+        client.query("INSERT INTO people (name, location, age, address, animal) VALUES ($1, $2, $3, $4, $5) RETURNING id", [addedPerson.name, addedPerson.location, addedPerson.age, addedPerson.address, addedPerson.animal],
             function(err, result) {
                 if(err) {
                     console.log("Error inserting data: ", err);
                     res.send(false);
                 }
-
+                console.log(result);
                 res.send(true);
             });
 
@@ -69,12 +71,12 @@ app.post('/data', function(req,res){
 });
 
 app.delete('/data', function(req,res){
-    console.log(req.body.id);
-
-    Person.findByIdAndRemove({"_id" : req.body.id}, function(err, data){
-        if(err) console.log(err);
-        res.send(data);
-    });
+    //console.log(req.body.id);
+    //
+    //Person.findByIdAndRemove({"_id" : req.body.id}, function(err, data){
+    //    if(err) console.log(err);
+    //    res.send(data);
+    //});
 
 
 });
