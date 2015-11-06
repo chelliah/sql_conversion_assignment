@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({expanded: true}));
 
 
 app.get('/find',function(req,res){
-    var person = req.query.peopleSearch;
+    var person = "%" + req.query.peopleSearch +  "%";
     pg.connect(connectionString, function(err,client){
         client.query("SELECT name, age, location,address,animal From people WHERE name ILIKE $1", [person], function(err,result){
             if(err) {
