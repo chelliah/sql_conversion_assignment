@@ -77,6 +77,18 @@ app.delete('/data', function(req,res){
     //    if(err) console.log(err);
     //    res.send(data);
     //});
+    console.log(req.body);
+    var deletedId = req.body.id;
+    pg.connect(connectionString, function(err,client){
+        client.query("DELETE FROM people WHERE id=$1", [deletedId] , function(err,result){
+            if (err){
+                console.log("oops its an error", err);
+                res.send(false);
+            }
+            console.log(result);
+            res.send(true);
+        });
+    })
 
 
 });
